@@ -28,14 +28,14 @@ impl AppConfig {
     }
 
     /// Sets the title.
-    pub fn set_title(&mut self, title: String) -> Self { self.title = title; *self }
+    pub fn with_title(&mut self, title: String) -> Self { self.title = title; *self }
 
     /// Sets if resizable.
-    pub fn set_resizable(&mut self, resizable: bool) -> Self { self.resizable = resizable; *self }
+    pub fn with_resizable(&mut self, resizable: bool) -> Self { self.resizable = resizable; *self }
 
     /// Sets the width.
-    pub fn set_width(&mut self, width: u32) -> Self { self.width = width; *self }
+    pub fn with_width(&mut self, width: u32) -> Self { self.width = width; *self }
 
     /// Sets the height.
-    pub fn set_height(&mut self, height: u32) -> Self { self.height = height; *self }
+    pub fn with_height(&mut self, height: u32) -> Self { self.height = height; *self }
 }
