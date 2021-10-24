@@ -2,7 +2,7 @@
 <h2 align="center">for those who want a game as simple as pong, as fast as possible.</h2>
 
 </hr>
-<img align="center" style="filter: invert(50)" src="./assets/logo/gomp.png">
+<img align="center" src="./assets/logo/gomp.png">
 </hr>
 
 </br>
