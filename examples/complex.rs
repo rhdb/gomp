@@ -1,6 +1,7 @@
 use gomp::application::Application;
 use gomp::application::config::AppConfig;
 
+use log::error;
 use fern::colors::{Color, ColoredLevelConfig};
 
 fn main() {
@@ -33,7 +34,14 @@ fn main() {
         .with_height(300)
         .with_width(400);
 
-    let app = Application::new(config);
+    let app = match Application::new(config) {
+        Ok(a) => a,
+        Err(e) => {
+            error!("Failed to create application: {}", e);
+
+            return;
+        }
+    };
 
     app.application_loop();
 }

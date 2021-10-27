@@ -1,6 +1,8 @@
 pub mod shaders;
 pub mod render;
 
+use shaders::ShaderBuilder;
+
 use winit::window::Window;
 use log::debug;
 
@@ -17,7 +19,7 @@ pub struct Renderer {
 impl Renderer {
     /// Creates a new renderer. Compiles shaders, gets devices,
     /// make queues, and *all that jazz*.
-    pub async fn new(window: &Window) -> Self {
+    pub async fn new(window: &Window) -> Result<Self, Box<dyn std::error::Error + 'static>> {
         // Get the physical size of the window.
         let size = window.inner_size();
 
@@ -58,16 +60,20 @@ impl Renderer {
 
         // Lets compile our shaders
         debug!("Compiling default vertex shader");
-        let vertex_shader = device.create_shader_module(&wgpu::ShaderModuleDescriptor {
-            label: Some("Default vertex shader"),
-            source: wgpu::ShaderSource::Wgsl(shaders::vertex::DEFAULT_VERTEX_SOURCE.into()),
-        });
+        let vertex_shader = ShaderBuilder::new()
+            .with_label("Default vertex shader")
+            .with_source(shaders::ShaderSourceType::Wgsl, shaders::vertex::DEFAULT_VERTEX_SOURCE)
+            .with_entry_point("main") // this is technically the default
+            .with_device(&device)
+            .compile()?;
 
         debug!("Compiling default fragment shader");
-        let fragment_shader = device.create_shader_module(&wgpu::ShaderModuleDescriptor {
-            label: Some("Default fragment shader"),
-            source: wgpu::ShaderSource::Wgsl(shaders::fragment::DEFAULT_FRAGMENT_SOURCE.into())
-        });
+        let fragment_shader = ShaderBuilder::new()
+            .with_label("Default fragment shader")
+            .with_source(shaders::ShaderSourceType::Wgsl, shaders::fragment::DEFAULT_FRAGMENT_SOURCE)
+            .with_entry_point("main")
+            .with_device(&device)
+            .compile()?;
 
         debug!("Creating render pipeline layout");
         let render_pipeline_layout =
@@ -115,14 +121,14 @@ impl Renderer {
             },
         });
 
-        Self {
+        Ok(Self {
             surface,
             device,
             queue,
             config,
             size,
             render_pipeline,
-        }
+        })
     }
 
     /// Window resize event handler.

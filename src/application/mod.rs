@@ -25,10 +25,10 @@ pub struct Application {
 
 impl Application {
     /// Creates a new application with a config.
-    pub fn new(config: AppConfig) -> Self {
+    pub fn new(config: AppConfig) -> Result<Self, Box<dyn std::error::Error>> {
         let event_loop = EventLoop::new();
         let window = WindowBuilder::new().build(&event_loop).unwrap();
-        let renderer = executor::block_on(Renderer::new(&window));
+        let renderer = executor::block_on(Renderer::new(&window))?;
 
         window.set_resizable(config.resizable);
         window.set_title(&config.title);
@@ -36,12 +36,12 @@ impl Application {
         window.set_always_on_top(config.top);
         window.set_decorations(config.décor);
 
-        Self {
+        Ok(Self {
             event_loop,
             window,
             renderer,
             state: State {}
-        }
+        })
     }
 
     /// Returns the underlying window type, in case we don't expose
