@@ -1,3 +1,58 @@
+//! The overarching "game controller".
+//!
+//! # Finally!
+//! 
+//! Something the clients are actually encouraged to use. This module is the main driver for the
+//! engine. It drives the renderer, handles physics, optimizes the ECS, etc... You can see more
+//! complex exampes in the examples directory, but we have provided some here.
+//!
+//! # Examples!
+//!
+//! ```
+//! // This is configuration struct that you pass into the application contructor. You can look in
+//! // the modules documentation to get all the values that you can set, and what they do. If needed,
+//! // you can also extract certain values from the application (in reference form), and apply
+//! // mutations there.
+//! // Note that this is not encouraged due to possible backend shift (we don't plan
+//! // on this, but better safe than sorry).
+//! let config = AppConfig::new()
+//!     .with_title("Complex Demo")
+//!     .with_height(300) // Physical size of 300px.
+//!     .with_width(400); // Physical size of 400px.
+//!
+//! // Actually construct the application.
+//! let app = match Application::new(config) {
+//!     Ok(a) => a,
+//!     Err(e) => {
+//!     error!("Failed to create application: {}", e);
+//!
+//!     return;
+//!     }
+//! };
+//!
+//! // Start the application loop. This is not technically required, as you can write your own
+//! // application loop, but in the future "loop hooks" may be added to extend the application loop
+//! // without actually rewritting it yourself.
+//! match app.application_loop() {
+//!     Ok(()) => (),
+//!     Err(e) => {
+//!         error!("Something went mal in the application that cannot be recovered from.");
+//!
+//!         return;
+//!     }
+//! };
+//! ```
+//!
+//! # Panics!
+//!
+//! Everything is designed to propagate errors back to the client, so nothing should panic. If
+//! something panics, chances are it's a bug (e.g. a contributor/author forgetting to add a check,
+//! and then unwraping a value).
+//!
+//! The only thing that could panic is shader compilation. You can see the shader module inside the
+//! renderer module for more information on why this happens. Note that this panic *will not* cause
+//! your application to crash.
+
 pub mod config;
 
 use futures::executor;

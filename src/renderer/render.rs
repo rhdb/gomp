@@ -1,3 +1,9 @@
+//! Main rendering functionality.
+//!
+//! Actually does the rendering work. These functions are well documented, so you should be able to
+//! build an interface to this module with little effort. Plus, you can see the way the Application
+//! calls it for in-source examples.
+
 use super::Renderer;
 
 impl Renderer {

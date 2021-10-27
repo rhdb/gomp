@@ -1,3 +1,44 @@
+//! Easy shader abstraction.
+//!
+//! This shader builds builds shaders. While you don't technically need to use this (you can
+//! compile the shaders directly with wgpu), it saves you having to adding the dependency,
+//! and makes it easier to upgrade versions if we change our shader backend.
+//!
+//! It also checks against runtime errore (albiet at runtime and not at compiled time, but this
+//! *should* be supported in the future).
+//!
+//! # Panics
+//!
+//! This builder will only panic when compiling shaders. If there is an error during the
+//! compilation process, gomp *will not* catch it, but rather it will panic. It appears that
+//! wgpu does't support trying to compile a shader (e.g. catching the error in a more idiomatic
+//! way), but if you know of such a function, please submit a issue/PR.
+//!
+//! # Note
+//! The only shader types supported current are: WGSL. Everything else isn't supported by gomp. The
+//! compie function will return an error if an unsupported shader type is passed in.
+//!
+//! # Examples
+//!
+//! ```
+//! // Make sure the query your application's renderer for the device; this will be used later in
+//! // the example.
+//!
+//! let vertex_shader = ShaderBuilder::new()
+//!     // Make shader issues easy to debug by adding a label. Not strictly nessisary, but gomp
+//!     // will emit a warning.
+//!     .label("Default vertex shader")
+//!     // You probably want to actually make a vertex.wgsl shader. You can find an example in the
+//!     // source tree inside the renderer::shaders module.
+//!     .source(include_str("vertex.wgsl").into())
+//!     // The shaders entry point.
+//!     .with_entry_point("main")
+//!     // The device to bind on. You can get this from the renderer struct (inside your application).
+//!     .with_device(&device)
+//!     // Actually compile the thing!
+//!     .compile().expect("Failed to compile!");
+//! ```
+
 pub mod vertex;
 pub mod fragment;
 

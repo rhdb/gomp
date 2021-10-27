@@ -1,3 +1,19 @@
+//! The built-in gomp renderer.
+//!
+//! # For clients
+//! Clients should never need to interact with this. Your application instance should call the
+//! renderer whenever nessisary.
+//!
+//! # For developers
+//! Most of these functions are pretty self explanitory. To illustrate this, below are some
+//! functions and their purpose. You will see the API is pretty intuitive.
+//!
+//! | Function | Purpose |
+//! |---|---|
+//! | `new` | Creates a new renderer. |
+//! | `resize` | Handles window resize events. |
+//! | `render` | Renders a frame. |
+
 pub mod shaders;
 pub mod render;
 
