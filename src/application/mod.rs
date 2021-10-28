@@ -71,23 +71,23 @@ use super::ecs::scene::Scene;
 use config::AppConfig;
 
 #[derive(Debug)]
-pub struct Application {
+pub struct Application<'a> {
     event_loop: EventLoop<()>,
     window: Window,
 
     renderer: Renderer,
     state: State,
     current_scene_index: u16,
-    scenes: Vec<Scene>,
+    scenes: Vec<Scene<'a>>,
 }
 
-impl Application {
+impl<'a> Application<'a> {
     /// Creates a new application with a config.
     pub fn new(config: AppConfig) -> Result<Self, Box<dyn std::error::Error>> {
         let event_loop = EventLoop::new();
         let window = WindowBuilder::new().build(&event_loop).unwrap();
         let renderer = executor::block_on(Renderer::new(&window))?;
-        let scenes = vec![Scene::new()];
+        let scenes = vec![Scene::new(&renderer)];
 
         window.set_resizable(config.resizable);
         window.set_title(&config.title);
@@ -183,6 +183,10 @@ impl Application {
 
             _ => {},
         });
+    }
+
+    pub fn get_renderer(&self) -> &Renderer {
+        &self.renderer
     }
 }
 

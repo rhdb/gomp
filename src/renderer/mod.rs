@@ -14,6 +14,7 @@
 //! | `resize` | Handles window resize events. |
 //! | `render` | Renders a frame. |
 
+pub mod buffer;
 pub mod vertex;
 pub mod shaders;
 pub mod render;
@@ -44,7 +45,7 @@ impl Renderer {
         // The instance is a handle to our GPU
         // Backends::all => Vulkan + Metal + DX12 + Browser WebGPU
         debug!("Getting a GPU handle (instance)");
-        let instance = wgpu::Instance::new(wgpu::Backends::all());
+        let instance = wgpu::Instance::new(wgpu::Backends::GL);
         let surface = unsafe { instance.create_surface(window) };
         let adapter = instance.request_adapter(
             &wgpu::RequestAdapterOptions {
@@ -58,7 +59,7 @@ impl Renderer {
         debug!("Grabbing a device");
         let (device, queue) = adapter.request_device(
             &wgpu::DeviceDescriptor {
-                features: wgpu::Features::POLYGON_MODE_LINE,
+                features: wgpu::Features::empty(),
                 limits: wgpu::Limits::default(),
                 label: None,
             },
@@ -161,6 +162,11 @@ impl Renderer {
             self.config.height = new_size.height;
             self.surface.configure(&self.device, &self.config);
         }
+    }
+
+    /// Returns the device the renderer is rendering to.
+    pub fn get_device(&self) -> &wgpu::Device {
+        &self.device
     }
 }
 
