@@ -23,47 +23,45 @@ impl Renderer {
             label: Some("Default render encoder"),
         });
 
-        {
-            // Create a render pass
-            let mut render_pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
-                label: Some("Default render pass"),
-                color_attachments: &[wgpu::RenderPassColorAttachment {
-                    view: &view,
-                    resolve_target: None,
-                    ops: wgpu::Operations {
-                        load: wgpu::LoadOp::Clear(wgpu::Color {
-                            r: 0.1,
-                            g: 0.2,
-                            b: 0.3,
-                            a: 1.0,
-                        }),
-                        store: true,
-                    },
-                }],
-                depth_stencil_attachment: None,
-            });
+        // Create a render pass
+        let mut render_pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
+            label: Some("Default render pass"),
+            color_attachments: &[wgpu::RenderPassColorAttachment {
+                view: &view,
+                resolve_target: None,
+                ops: wgpu::Operations {
+                    load: wgpu::LoadOp::Clear(wgpu::Color {
+                        r: 0.1,
+                        g: 0.2,
+                        b: 0.3,
+                        a: 1.0,
+                    }),
+                    store: true,
+                },
+            }],
+            depth_stencil_attachment: None,
+        });
 
-            //  // 2.
-            // render_pass.draw(0..3, 0..1); // 3.
+        //  // 2.
+        // render_pass.draw(0..3, 0..1); // 3.
             
-            let verticies: &[Vertex] = &[
-                Vertex::new([0.0, 0.5, 0.0], [1.0, 0.0, 0.0]),
-                Vertex::new([-0.5, -0.5, 0.0], [0.0, 1.0, 0.0]),
-                Vertex::new([0.5, -0.5, 0.0], [0.0, 0.0, 1.0]),
-            ];
+        let verticies: &[Vertex] = &[
+            Vertex::new([0.0, 0.5, 0.0], [1.0, 0.0, 0.0]),
+            Vertex::new([-0.5, -0.5, 0.0], [0.0, 1.0, 0.0]),
+            Vertex::new([0.5, -0.5, 0.0], [0.0, 0.0, 1.0]),
+        ];
 
-            let vertex_buffer = Box::leak(Box::new(self.device.create_buffer_init(
-                &wgpu::util::BufferInitDescriptor {
-                    label: Some("Vertex Buffer"),
-                    contents: bytemuck::cast_slice(verticies),
-                    usage: wgpu::BufferUsages::VERTEX,
-                }
-            )));
+        let vertex_buffer = Box::leak(Box::new(self.device.create_buffer_init(
+            &wgpu::util::BufferInitDescriptor {
+                label: Some("Vertex Buffer"),
+                contents: bytemuck::cast_slice(verticies),
+                usage: wgpu::BufferUsages::VERTEX,
+            }
+        )));
 
-            render_pass.set_pipeline(&self.render_pipeline);
-            render_pass.set_vertex_buffer(0, vertex_buffer.slice(..));
-            render_pass.draw(0..(verticies.len() as u32), 0..1);
-        }
+        render_pass.set_pipeline(&self.render_pipeline);
+        render_pass.set_vertex_buffer(0, vertex_buffer.slice(..));
+        render_pass.draw(0..(verticies.len() as u32), 0..1);
     
         // Submit will accept anything that implements IntoIter
         self.queue.submit(std::iter::once(encoder.finish()));
