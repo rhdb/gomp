@@ -14,10 +14,12 @@
 //! | `resize` | Handles window resize events. |
 //! | `render` | Renders a frame. |
 
+pub mod vertex;
 pub mod shaders;
 pub mod render;
 
 use shaders::ShaderBuilder;
+use vertex::Vertex;
 
 use winit::window::Window;
 use log::debug;
@@ -103,24 +105,28 @@ impl Renderer {
         let render_pipeline = device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
             label: Some("Render Pipeline"),
             layout: Some(&render_pipeline_layout),
+            // Specify vertex instructions.
             vertex: wgpu::VertexState {
                 module: &vertex_shader,
-                entry_point: "main", // 1.
-                buffers: &[], // 2.
+                entry_point: "main",
+                buffers: &[
+                    Vertex::desc(),
+                ],
             },
-            fragment: Some(wgpu::FragmentState { // 3.
+            // Specify fragment instructions.
+            fragment: Some(wgpu::FragmentState {
                 module: &fragment_shader,
                 entry_point: "main",
-                targets: &[wgpu::ColorTargetState { // 4.
+                targets: &[wgpu::ColorTargetState {
                     format: config.format,
                     blend: Some(wgpu::BlendState::REPLACE),
                     write_mask: wgpu::ColorWrites::ALL,
                 }],
             }),
             primitive: wgpu::PrimitiveState {
-                topology: wgpu::PrimitiveTopology::TriangleList, // 1.
+                topology: wgpu::PrimitiveTopology::TriangleList,
                 strip_index_format: None,
-                front_face: wgpu::FrontFace::Ccw, // 2.
+                front_face: wgpu::FrontFace::Ccw,
                 cull_mode: Some(wgpu::Face::Back),
                 // Setting this to anything other than Fill requires Features::NON_FILL_POLYGON_MODE
                 polygon_mode: wgpu::PolygonMode::Fill,
@@ -129,10 +135,10 @@ impl Renderer {
                 // Requires Features::CONSERVATIVE_RASTERIZATION
                 conservative: false,
             },
-            depth_stencil: None, // 1.
+            depth_stencil: None,
             multisample: wgpu::MultisampleState {
-                count: 1, // 2.
-                mask: !0, // 3.
+                count: 1,
+                mask: !0,
                 alpha_to_coverage_enabled: false, // 4.
             },
         });

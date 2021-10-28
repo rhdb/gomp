@@ -67,6 +67,7 @@ use log::{trace, debug, info, error};
 
 use super::renderer::Renderer;
 use super::state::State;
+use super::ecs::scene::Scene;
 use config::AppConfig;
 
 #[derive(Debug)]
@@ -76,6 +77,8 @@ pub struct Application {
 
     renderer: Renderer,
     state: State,
+    current_scene_index: u16,
+    scenes: Vec<Scene>,
 }
 
 impl Application {
@@ -84,6 +87,7 @@ impl Application {
         let event_loop = EventLoop::new();
         let window = WindowBuilder::new().build(&event_loop).unwrap();
         let renderer = executor::block_on(Renderer::new(&window))?;
+        let scenes = vec![Scene::new()];
 
         window.set_resizable(config.resizable);
         window.set_title(&config.title);
@@ -95,7 +99,9 @@ impl Application {
             event_loop,
             window,
             renderer,
-            state: State {}
+            state: State {},
+            current_scene_index: 0,
+            scenes,
         })
     }
 
@@ -106,7 +112,7 @@ impl Application {
     }
 
     /// Handle our inputs.
-    pub fn input(&mut self, event: &WindowEvent) -> bool {
+    pub fn input(&mut self, _event: &WindowEvent) -> bool {
         false
     }
 

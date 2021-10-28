@@ -5,6 +5,9 @@
 //! authors ability). You can see examples in the example repository, or just look through this
 //! documentation to see some examples for the modules included in this crate.
 
+#[macro_use]
+extern crate derivative;
+
 pub mod error;
 pub mod state;
 pub mod application;

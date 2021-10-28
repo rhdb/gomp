@@ -15,6 +15,8 @@ pollster = "0.2"
 futures = "0.3.17"
 log = "0.4.14"
 thiserror = "1.0.30"
+derivative = "2.2.0"
+bytemuck = "1.7.2"
 
 [dev-dependencies]
 fern = { version = "0.6.0", features = [ "colored" ] }

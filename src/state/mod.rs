@@ -14,7 +14,7 @@ impl State {
     }
 
     /// Handle our inputs.
-    pub fn input(&mut self, event: &WindowEvent) -> bool {
+    pub fn input(&mut self, _event: &WindowEvent) -> bool {
         false
     }
 

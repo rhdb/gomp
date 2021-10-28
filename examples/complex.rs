@@ -23,6 +23,7 @@ fn main() {
         })
         .level(log::LevelFilter::Debug)
         .level_for("wgpu_core", log::LevelFilter::Info)
+        .level_for("wgpu_core::device", log::LevelFilter::Warn)
         .level_for("wgpu_hal", log::LevelFilter::Info)
         .level_for("naga", log::LevelFilter::Info)
         .chain(std::io::stdout())

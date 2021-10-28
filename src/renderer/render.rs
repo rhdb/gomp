@@ -4,7 +4,10 @@
 //! build an interface to this module with little effort. Plus, you can see the way the Application
 //! calls it for in-source examples.
 
+use wgpu::util::DeviceExt;
+
 use super::Renderer;
+use crate::renderer::vertex::Vertex;
 
 impl Renderer {
     /// Actually render to a frame.
@@ -40,8 +43,26 @@ impl Renderer {
                 depth_stencil_attachment: None,
             });
 
-            render_pass.set_pipeline(&self.render_pipeline); // 2.
-            render_pass.draw(0..3, 0..1); // 3.
+            //  // 2.
+            // render_pass.draw(0..3, 0..1); // 3.
+            
+            let verticies: &[Vertex] = &[
+                Vertex::new([0.0, 0.5, 0.0], [1.0, 0.0, 0.0]),
+                Vertex::new([-0.5, -0.5, 0.0], [0.0, 1.0, 0.0]),
+                Vertex::new([0.5, -0.5, 0.0], [0.0, 0.0, 1.0]),
+            ];
+
+            let vertex_buffer = Box::leak(Box::new(self.device.create_buffer_init(
+                &wgpu::util::BufferInitDescriptor {
+                    label: Some("Vertex Buffer"),
+                    contents: bytemuck::cast_slice(verticies),
+                    usage: wgpu::BufferUsages::VERTEX,
+                }
+            )));
+
+            render_pass.set_pipeline(&self.render_pipeline);
+            render_pass.set_vertex_buffer(0, vertex_buffer.slice(..));
+            render_pass.draw(0..(verticies.len() as u32), 0..1);
         }
     
         // Submit will accept anything that implements IntoIter
