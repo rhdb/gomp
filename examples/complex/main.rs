@@ -44,5 +44,7 @@ fn main() {
         }
     };
 
+    app.load();
+
     app.application_loop();
 }

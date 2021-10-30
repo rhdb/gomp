@@ -71,23 +71,24 @@ use super::ecs::scene::Scene;
 use config::AppConfig;
 
 #[derive(Debug)]
-pub struct Application<'a> {
+pub struct Application {
     event_loop: EventLoop<()>,
     window: Window,
 
     renderer: Renderer,
     state: State,
-    current_scene_index: u16,
-    scenes: Vec<Scene<'a>>,
+    active_scene_index: usize,
+    // We will always have scenes in our application, so this is OK.
+    scenes: Vec<Scene>,
 }
 
-impl<'a> Application<'a> {
+impl Application {
     /// Creates a new application with a config.
     pub fn new(config: AppConfig) -> Result<Self, Box<dyn std::error::Error>> {
         let event_loop = EventLoop::new();
         let window = WindowBuilder::new().build(&event_loop).unwrap();
         let renderer = executor::block_on(Renderer::new(&window))?;
-        let scenes = vec![Scene::new(&renderer)];
+        let scenes = vec![Scene::new("main")];
 
         window.set_resizable(config.resizable);
         window.set_title(&config.title);
@@ -100,7 +101,7 @@ impl<'a> Application<'a> {
             window,
             renderer,
             state: State {},
-            current_scene_index: 0,
+            active_scene_index: 0,
             scenes,
         })
     }
@@ -130,6 +131,8 @@ impl<'a> Application<'a> {
         let window = self.window;
         let mut renderer = self.renderer;
         let mut state = self.state;
+        let scenes = self.scenes;
+        let active_scene_index = self.active_scene_index;
 
         debug!("Moving into window event loop");
         event_loop.run(move |event, _, control_flow| match event {
@@ -164,7 +167,7 @@ impl<'a> Application<'a> {
             
             Event::RedrawRequested(_) => {
                 state.update();
-                match renderer.render() {
+                match renderer.render(scenes.get(active_scene_index).expect("invalud active_scene_index during renderer invokation")) {
                     Ok(_) => {}
                     // Reconfigure the surface if lost
                     Err(wgpu::SurfaceError::Lost) => renderer.resize(renderer.size),
@@ -185,8 +188,20 @@ impl<'a> Application<'a> {
         });
     }
 
+    /// Get a reference to the renderer.
     pub fn get_renderer(&self) -> &Renderer {
         &self.renderer
+    }
+
+    /// Gets a mutable reference to the active scene.
+    pub fn get_mut_active_scene(&mut self) -> &mut Scene {
+        self.scenes.get_mut(self.active_scene_index).expect("invalid active_scene_index during renderer invokation")
+    }
+
+    /// Get a reference to the active scene. Gomp does not provide a method to get all the scenes,
+    /// as it is required Gomp manages them for runtime safety.
+    pub fn get_active_scene(&self) -> &Scene {
+        &self.scenes.get(self.active_scene_index).expect("invalid active_scene_index during renderer invokation")
     }
 }
 

@@ -4,14 +4,21 @@
 //! build an interface to this module with little effort. Plus, you can see the way the Application
 //! calls it for in-source examples.
 
-use wgpu::util::DeviceExt;
-
 use super::Renderer;
-use crate::renderer::vertex::Vertex;
+use crate::ecs::{
+    scene::Scene,
+    component::{
+        Component,
+        ComponentType
+    },
+};
+
+use wgpu::RenderPass;
+use log::debug;
 
 impl Renderer {
     /// Actually render to a frame.
-    pub fn render(&mut self) -> Result<(), wgpu::SurfaceError> {
+    pub fn render(&mut self, scene: &Scene) -> Result<(), wgpu::SurfaceError> {
         // Get somewhere to render to
         let output = self.surface.get_current_texture()?;
 
@@ -43,7 +50,7 @@ impl Renderer {
                 depth_stencil_attachment: None,
             });
 
-            let verticies: &[Vertex] = &[
+            /* let verticies: &[Vertex] = &[
                 Vertex::new([0.0, 0.5, 0.0], [1.0, 0.0, 0.0]),
                 Vertex::new([-0.5, -0.5, 0.0], [0.0, 1.0, 0.0]),
                 Vertex::new([0.5, -0.5, 0.0], [0.0, 0.0, 1.0]),
@@ -59,7 +66,9 @@ impl Renderer {
 
             render_pass.set_pipeline(&self.render_pipeline);
             render_pass.set_vertex_buffer(0, vertex_buffer.slice(..));
-            render_pass.draw(0..(verticies.len() as u32), 0..1);
+            render_pass.draw(0..(verticies.len() as u32), 0..1); */
+        
+            self.render_scene_meshes(&mut render_pass, scene);
         }
 
         // Submit will accept anything that implements IntoIter
@@ -67,6 +76,20 @@ impl Renderer {
         output.present();
 
         Ok(())
+    }
+
+    fn render_scene_meshes(&mut self, pass: &mut RenderPass, scene: &Scene) {
+        // Get all components and find the meshes.
+        for component in scene.get_components() {
+            if let ComponentType::Mesh = component.type_of() {
+                self.render_mesh(pass, component);
+            }
+        }
+    }
+
+    fn render_mesh(&mut self, pass: &mut RenderPass, mesh: &Box<dyn Component>) {
+        // We know for sure that mesh is a Mesh here, so no need to worry.
+        debug!("Rendering {}", mesh.get_parent().get_name());
     }
 }
 
