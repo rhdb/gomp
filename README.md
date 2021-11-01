@@ -1,3 +1,9 @@
+# Notice of Abandonment
+This project has sense been abandoned. It would simply take to long (with a one person development team, that is) to feasibly create a game engine with suitable complexity for its desired use case. This project may be started back up, but only at the authors descresion.
+# End of Notice of Abandonment
+
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+
 <h1 align="center">gomp 🎮</h1>
 <h2 align="center">for those who want a game as simple as pong, as fast as possible.</h2>
 
