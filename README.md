@@ -1,6 +1,8 @@
 # Notice of Abandonment
-Due to the scope of this project (required for the wall) being larger than hoped, it is impracticle for a single developer (Milo Banks, the sole author) to create this engine in a suitable amount of time. This repository will feature no further commits. If it does, then this project has started back up. This may happen at the authors descretion, but there is a *very real* possibility that it will not.
+This project has sense been abandoned. It would simply take to long (with a one person development team, that is) to feasibly create a game engine with suitable complexity for its desired use case. This project may be started back up, but only at the authors descresion.
 # End of Notice of Abandonment
+
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 
 <h1 align="center">gomp 🎮</h1>
 <h2 align="center">for those who want a game as simple as pong, as fast as possible.</h2>
