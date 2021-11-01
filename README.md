@@ -1,3 +1,7 @@
+# Notice of Abandonment
+Due to the scope of this project (required for the wall) being larger than hoped, it is impracticle for a single developer (Milo Banks, the sole author) to create this engine in a suitable amount of time. This repository will feature no further commits. If it does, then this project has started back up. This may happen at the authors descretion, but there is a *very real* possibility that it will not.
+# End of Notice of Abandonment
+
 <h1 align="center">gomp 🎮</h1>
 <h2 align="center">for those who want a game as simple as pong, as fast as possible.</h2>
 
